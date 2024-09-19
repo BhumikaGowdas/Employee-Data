@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Employee</title>
+</head>
+<body>
+    <nav>
+        <a href="./dashboard.html">Home</a>
+        <a href="./employee-list.html">Employee List</a>
+        <!-- Ensure this link points to create-employee.html -->
+        <a href="./create-employee.html">Create Employee</a>
+        <span id="adminName"></span>
+        <a href="./index.html" id="logoutLink">Logout</a>
+
+<script>
+    document.getElementById('logoutLink').addEventListener('click', function() {
+        localStorage.removeItem('username'); // Clear stored username on logout
+        localStorage.removeItem('employees'); // Optionally clear employee data if needed
+    });
+</script>
+    </nav>
+
+    <h2>Welcome to Admin Dashboard</h2>
+    <script>
+        // Set the admin name from local storage
+        document.getElementById('adminName').textContent = localStorage.getItem('username');
+    </script>
+</body>
+</html>

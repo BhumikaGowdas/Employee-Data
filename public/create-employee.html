@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Employee</title>
+</head>
+<body>
+    <nav>
+        <a href="./dashboard.html">Home</a>
+        <a href="./employee-list.html">Employee List</a>
+        <span id="adminName"></span>
+        <a href="./index.html" id="logoutLink">Logout</a>
+
+<script>
+    document.getElementById('logoutLink').addEventListener('click', function() {
+        localStorage.removeItem('username'); // Clear stored username on logout
+        localStorage.removeItem('employees'); // Optionally clear employee data if needed
+    });
+</script>
+    </nav>
+
+    <h2 id="formTitle">Create Employee</h2>
+    <form id="employeeForm">
+        <label>Name</label>
+        <input type="text" id="name" required><br><br>
+
+        <label>Email</label>
+        <input type="email" id="email" required><br><br>
+
+        <label>Mobile No</label>
+<input type="text" id="mobile" pattern="\d{10}" title="Please enter exactly 10 digits" maxlength="10" required><br><br>
+
+        <label>Designation</label>
+        <select id="designation" required>
+            <option value="HR">HR</option>
+            <option value="Manager">Manager</option>
+            <option value="Sales">Sales</option>
+        </select><br><br>
+
+        <label>Gender</label>
+        <input type="radio" name="gender" value="Male" required> Male
+        <input type="radio" name="gender" value="Female" required> Female<br><br>
+
+        <label>Course</label>
+        <input type="checkbox" name="course" value="MCA"> MCA
+        <input type="checkbox" name="course" value="BCA"> BCA
+        <input type="checkbox" name="course" value="BSC"> BSC<br><br>
+
+        <label>Upload Image</label>
+        <input type="file" id="image" accept=".jpg,.png"><br><br>
+
+        <button type="submit">Submit</button>
+    </form>
+
+    <script>
+        const urlParams = new URLSearchParams(window.location.search);
+        const index = urlParams.get('index');
+        const employees = JSON.parse(localStorage.getItem('employees')) || [];
+        let employeeToEdit = null;
+
+        if (index !== null) {
+            employeeToEdit = employees[index];
+            if (employeeToEdit) {
+                // Prefill form with employee data
+                document.getElementById('name').value = employeeToEdit.name;
+                document.getElementById('email').value = employeeToEdit.email;
+                document.getElementById('mobile').value = employeeToEdit.mobile;
+                document.getElementById('designation').value = employeeToEdit.designation;
+                document.querySelector(`input[name="gender"][value="${employeeToEdit.gender}"]`).checked = true;
+
+                employeeToEdit.courses.forEach(course => {
+                    document.querySelector(`input[name="course"][value="${course}"]`).checked = true;
+                });
+
+                document.getElementById('formTitle').textContent = 'Edit Employee';
+            }
+        }
+
+        document.getElementById('employeeForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            const name = document.getElementById('name').value;
+            const email = document.getElementById('email').value;
+            const mobile = document.getElementById('mobile').value;
+            const designation = document.getElementById('designation').value;
+            const gender = document.querySelector('input[name="gender"]:checked').value;
+            const courses = Array.from(document.querySelectorAll('input[name="course"]:checked')).map(c => c.value);
+            const image = document.getElementById('image').files[0] ? document.getElementById('image').files[0].name : (employeeToEdit ? employeeToEdit.image : '');
+
+            if (!name || !email || !mobile || !designation || !gender || courses.length === 0 || !image) {
+                alert('All fields are required!');
+                return;
+            }
+
+            const newEmployee = { id: employeeToEdit ? employeeToEdit.id : employees.length + 1, name, email, mobile, designation, gender, courses, image, createdDate: new Date() };
+
+            if (employeeToEdit) {
+                // Update existing employee
+                employees[index] = newEmployee;
+            } else {
+                // Add new employee
+                employees.push(newEmployee);
+            }
+
+            localStorage.setItem('employees', JSON.stringify(employees));
+            alert(employeeToEdit ? 'Employee updated successfully!' : 'Employee created successfully!');
+            window.location.href = './employee-list.html';
+        });
+
+        document.getElementById('adminName').textContent = localStorage.getItem('username');
+    </script>
+</body>
+</html>

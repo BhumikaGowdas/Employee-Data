@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Employee</title>
+</head>
+<body>
+    <h2>Login Page</h2>
+    <form id="loginForm">
+        <label>User Name</label>
+        <input type="text" id="username" required><br><br>
+        
+        <label>Password</label>
+        <input type="password" id="password" required><br><br>
+
+        <button type="submit">Login</button>
+    </form>
+
+    <p id="errorMsg" style="color:red;"></p>
+
+    <script>
+        document.getElementById('loginForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+
+            if (!username || !password) {
+                document.getElementById('errorMsg').textContent = "All fields are required.";
+                return;
+            }
+
+            // Simulate successful login for redirection
+            localStorage.setItem('username', username);
+            window.location.href = './dashboard.html'; // Use relative path
+        });
+    </script>
+</body>
+</html>
